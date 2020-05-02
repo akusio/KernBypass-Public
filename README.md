@@ -20,3 +20,4 @@
 3. run `changerootfs &` (don't forget "&").
 4. run `disown %1`
 5. done. the changerootfs is now a daemon.
+6. after changerootfs launch, open Preferences > KernBypass > select enable application.
