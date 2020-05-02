@@ -21,3 +21,7 @@
 4. run `disown %1`
 5. done. the changerootfs is now a daemon.
 6. after changerootfs launch, open Preferences > KernBypass > select enable application.
+
+# Uninstall
+1. just uninstall from Cydia.
+2. REBOOT!!!
