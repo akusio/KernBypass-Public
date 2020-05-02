@@ -15,7 +15,7 @@
  ### This is kernel level tweaks. no warranty run it at your own risk.
  
 # How to use
-1. [download](https://github.com/akusio/KernBypass/releases/download/0.0.1/jp.akusio.kernbypass_0.0.1_iphoneos-arm.deb) and install deb.
+1. [download](https://github.com/akusio/KernBypass-Public/releases/download/0.0.1/jp.akusio.kernbypass_0.0.1_iphoneos-arm.deb) and install deb.
 2. in terminal, run `su` and type your password.
 3. run `changerootfs &` (don't forget "&").
 4. run `disown %1`
