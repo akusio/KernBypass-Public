@@ -8,7 +8,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
-			<string>Enable Applications</string>
+			<string>Enabled Applications</string>
 		</dict>
 		<dict>
 			<key>ALSectionDescriptors</key>
@@ -35,7 +35,7 @@
 			<key>bundle</key>
 			<string>AppList</string>
 			<key>label</key>
-			<string>Enable Applications</string>
+			<string>Enabled Applications</string>
 			<key>cell</key>
 			<string>PSLinkCell</string>
 			<key>isController</key>

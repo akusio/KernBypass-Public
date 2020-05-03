@@ -1,27 +1,34 @@
 # KernBypass
- kernel level jailbreak detection bypass
+kernel level jailbreak detection bypass
 
-# Support Devices
+## Support Devices
 - iOS13.x
-- A7-A13? (A12 & A13 not tested)
+- A7-A13? (not tested on A12 & A13)
 - unc0ver or checkra1n
 
-# Credits
+## Credits
 - maphys by 0x7ff
 - vnodebypass by @XsF1re
 - jelbrekLib by @Jakeashacks
 
-# WARNING
- ### This is kernel level tweaks. no warranty run it at your own risk.
- 
-# How to use
-1. [download](https://github.com/akusio/KernBypass-Public/releases/download/0.0.1/jp.akusio.kernbypass_0.0.1_iphoneos-arm.deb) and install deb.
-2. in terminal, run `su` and type your password.
-3. run `changerootfs &` (don't forget "&").
-4. run `disown %1`
-5. done. the changerootfs is now a daemon.
-6. after changerootfs launch, open Preferences > KernBypass > select enable application.
+## WARNING
+**This tweak is the kernel level. There is NO warranty. Run it at your own risk.**
 
-# Uninstall
-1. just uninstall from Cydia.
+## Getting Started
+### Installation
+1. [download](https://github.com/akusio/KernBypass-Public/releases/download/0.0.1/jp.akusio.kernbypass_0.0.1_iphoneos-arm.deb) and install the deb file.
+### Setting up KernBypass
+1. In terminal, run `su` and type your password.
+2. Run `changerootfs &` (don't forget "&").
+3. Run `disown %1`
+4. Done. The changerootfs is now a daemon.
+
+### Selecting apps to bypass
+1. After installing changerootfs, open Preferences > KernBypass, then select the applications to be enabled the bypass.
+
+## Uninstall
+1. Just uninstall from Cydia.
 2. REBOOT!!!
+
+## License
+KernBypass is licensed under the [GPLv3](LICENSE).
