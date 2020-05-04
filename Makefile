@@ -13,5 +13,5 @@ include $(THEOS_MAKE_PATH)/tool.mk
 
 before-package::
 	ldid -S./ent.plist $(THEOS_STAGING_DIR)/usr/bin/changerootfs
-SUBPROJECTS += zzzzzzzzznotifychroot
+SUBPROJECTS += notifychroot
 include $(THEOS_MAKE_PATH)/aggregate.mk
