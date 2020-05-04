@@ -23,6 +23,7 @@ uint64_t get_vnode_with_chdir(const char* path);
 # define CPU_DATA_RTCLOCK_DATAP_OFF (0x198)
 #endif
 #define VM_KERNEL_LINK_ADDRESS (0xFFFFFFF007004000ULL)
+#define kCFCoreFoundationVersionNumber_iOS_12_0    (1535.12)
 #define kCFCoreFoundationVersionNumber_iOS_13_0_b2 (1656)
 #define kCFCoreFoundationVersionNumber_iOS_13_0_b1 (1652.20)
 
@@ -443,14 +444,45 @@ extern CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
 static uint64_t kbase = 0;
 static uint64_t kslide = 0;
 
-static const uint32_t off_p_pid = 0x68;
-static const uint32_t off_p_pfd = 0x108;
-static const uint32_t off_fd_rdir = 0x40;
-static const uint32_t off_fd_cdir = 0x38;
-static const uint32_t off_vnode_iocount = 0x64;
-static const uint32_t off_vnode_usecount = 0x60;
+static uint32_t off_p_pid = 0;
+static uint32_t off_p_pfd = 0;
+static uint32_t off_fd_rdir = 0;
+static uint32_t off_fd_cdir = 0;
+static uint32_t off_vnode_iocount = 0;
+static uint32_t off_vnode_usecount = 0;
 //static uint32_t off_p_csflags = 0x298;
 
+int koffset_init() {
+    if(kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_13_0_b2){
+        // ios 13
+        off_p_pid = 0x68;
+        off_p_pfd = 0x108;
+        off_fd_rdir = 0x40;
+        off_fd_cdir = 0x38;
+        off_vnode_iocount = 0x64;
+        off_vnode_usecount = 0x60;
+        return 0;
+    }
+    
+    if(kCFCoreFoundationVersionNumber == kCFCoreFoundationVersionNumber_iOS_13_0_b1){
+        //ios 13b1
+        return -1;
+    }
+    
+    if(kCFCoreFoundationVersionNumber <= kCFCoreFoundationVersionNumber_iOS_13_0_b1
+       && kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_12_0){
+        //ios 12
+        off_p_pid = 0x60;
+        off_p_pfd = 0x100;
+        off_fd_rdir = 0x40;
+        off_fd_cdir = 0x38;
+        off_vnode_iocount = 0x64;
+        off_vnode_usecount = 0x60;
+        return 0;
+    }
+    
+    return -1;
+}
 
 
 uint64_t proc_of_pid(pid_t pid) {
@@ -590,6 +622,10 @@ int main(int argc, char *argv[], char *envp[]) {
     pfinder_t pfinder;
     
     kern_return_t err;
+    
+    if(koffset_init() != 0){
+        printf("failed get koffsets\n");
+    }
     
     err = init_tfp0();
     
