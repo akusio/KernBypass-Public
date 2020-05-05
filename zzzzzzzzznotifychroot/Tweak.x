@@ -16,10 +16,7 @@ BOOL isEnableApplication(NSString *bundleID){
     return ret;
 }
 
-%hook SBApplication
--(void)_processWillLaunch:(id)arg1{
-    %orig;
-    NSString* bundleID = self.bundleIdentifier;
+void bypassApplication(NSString *bundleID){
     int pid = [[%c(FBSSystemService) sharedService] pidForApplication:bundleID];
     if(!isEnableApplication(bundleID) || pid == -1){
         return;
@@ -30,4 +27,25 @@ BOOL isEnableApplication(NSString *bundleID){
     CFNotificationCenterPostNotification(CFNotificationCenterGetDistributedCenter(), (__bridge CFStringRef)@"jp.akusio.chrooter", NULL, (__bridge CFDictionaryRef)info, YES);   
     kill(pid, SIGSTOP);
 }
+
+%group SB
+
+%hook FBApplicationProcess
+
+-(void)launchWithDelegate:(id)delegate{
+    NSDictionary *env = self.executionContext.environment;
+    %orig;
+    if(env[@"_MSSafeMode"] || env[@"_SafeMode"])
+        bypassApplication(self.executionContext.identity.embeddedApplicationIdentifier);
+}
+
 %end
+
+%end
+
+%ctor{
+    if(IN_SPRINGBOARD)
+        %init(SB);
+    else
+        bypassApplication([NSBundle mainBundle].bundleIdentifier);
+}
