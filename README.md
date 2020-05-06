@@ -2,7 +2,7 @@
 kernel level jailbreak detection bypass
 
 ## Support Devices
-- iOS13.x
+- iOS12.0-13.x
 - A7-A13? (not tested on A12 & A13)
 - unc0ver or checkra1n
 
