@@ -10,7 +10,9 @@ kernel level jailbreak detection bypass
 - maphys by 0x7ff
 - vnodebypass by @XsF1re
 - jelbrekLib by @Jakeashacks
+- Translated by sohsatoh
 - iOS12 support by dora2-iOS
+
 
 ## WARNING
 **This tweak is the kernel level. There is NO warranty. Run it at your own risk.**
