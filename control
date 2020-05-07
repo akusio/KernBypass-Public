@@ -1,6 +1,6 @@
 Package: jp.akusio.kernbypass
 Name: KernBypass
-Version: 0.0.2
+Version: 0.0.3
 Depends: mobilesubstrate, applist, preferenceloader, firmware(>=12.0)
 Architecture: iphoneos-arm
 Description: kernel level jailbreak detection bypass.
