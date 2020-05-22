@@ -2,14 +2,17 @@
 kernel level jailbreak detection bypass
 
 ## Support Devices
-- iOS13.x
-- A7-A13? (not tested on A12 & A13)
+- iOS12.0-13.x (confirmed on iOS12.4 and above)
+- A7-A13
 - unc0ver or checkra1n
 
 ## Credits
 - maphys by 0x7ff
 - vnodebypass by @XsF1re
 - jelbrekLib by @Jakeashacks
+- Translated by sohsatoh
+- iOS12 support by dora2-iOS
+
 
 ## WARNING
 **This tweak is the kernel level. There is NO warranty. Run it at your own risk.**
