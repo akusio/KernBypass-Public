@@ -1,0 +1,57 @@
+panic(cpu 3 caller 0xfffffff00e30eb58): Kernel data abort. at pc 0xfffffff00de137c8, lr 0xfffffff00dcd305c (saved state: 0xffffffe054d32ea0)
+	  x0: 0x0000000000000000  x1:  0xffffffe001694171  x2:  0xffffffe12992a5a0  x3:  0xffffffe12992a5d0
+	  x4: 0xffffffe054d332d8  x5:  0x0000000000000000  x6:  0x0000000000000000  x7:  0x0000000000000000
+	  x8: 0x000000000000002c  x9:  0xd32f4d388ee4f36d  x10: 0x0000000000000000  x11: 0x000000000000005b
+	  x12: 0xfffffff00d10f520 x13: 0x00000000000f4240  x14: 0xfffffff00f3a0000  x15: 0xffffffe00771f658
+	  x16: 0x00000000ffffffe0 x17: 0x0000000000000000  x18: 0xfffffff00e301000  x19: 0x0000000000000000
+	  x20: 0xffffffe00771f600 x21: 0xffffffe054d33540  x22: 0x0000000001292007  x23: 0xffffffe006004000
+	  x24: 0x0000000000000001 x25: 0xfffffff00da3a000  x26: 0xfffffff00da3a000  x27: 0xffffffe129929f08
+	  x28: 0xffffffe00771f628 fp:  0xffffffe054d33200  lr:  0xfffffff00dcd305c  sp:  0xffffffe054d331f0
+	  pc:  0xfffffff00de137c8 cpsr: 0x804003c4         esr: 0x96000006          far: 0x0000000000000454
+
+Debugger message: panic
+Memory ID: 0x6
+OS version: 17F75
+Kernel version: Darwin Kernel Version 19.5.0: Tue Apr 28 22:25:09 PDT 2020; root:xnu-6153.122.1~1/RELEASE_ARM64_T8015
+Kernel UUID: 15576917-FD0D-3A15-B52E-72D55A37D8E8
+iBoot version: pongoOS-1.2.0-63f6449e
+secure boot?: YES
+Paniclog version: 13
+Kernel slide:     0x0000000006108000
+Kernel text base: 0xfffffff00d10c000
+mach_absolute_time: 0x3b4fa5c1d
+Epoch Time:        sec       usec
+  Boot    : 0x5ec72405 0x0002ec28
+  Sleep   : 0x00000000 0x00000000
+  Wake    : 0x00000000 0x00000000
+  Calendar: 0x5ec72682 0x000d406f
+
+Panicked task 0xffffffe002425800: 523 pages, 5 threads: pid 679: ReportCrash
+Panicked thread: 0xffffffe00688e9c0, backtrace: 0xffffffe054d32710, tid: 9634
+		  lr: 0xfffffff00dcfed48  fp: 0xffffffe054d32750
+		  lr: 0xfffffff00dcfeba4  fp: 0xffffffe054d327c0
+		  lr: 0xfffffff00de13c68  fp: 0xffffffe054d32870
+		  lr: 0xfffffff00e30162c  fp: 0xffffffe054d32880
+		  lr: 0xfffffff00dcfe510  fp: 0xffffffe054d32bf0
+		  lr: 0xfffffff00dcfe868  fp: 0xffffffe054d32c40
+		  lr: 0xfffffff00f1a6a38  fp: 0xffffffe054d32c60
+		  lr: 0xfffffff00e30eb58  fp: 0xffffffe054d32dd0
+		  lr: 0xfffffff00de140bc  fp: 0xffffffe054d32e80
+		  lr: 0xfffffff00e30162c  fp: 0xffffffe054d32e90
+		  lr: 0xfffffff00de137c8  fp: 0xffffffe054d33200
+		  lr: 0xfffffff00dcd305c  fp: 0xffffffe054d33510
+		  lr: 0xfffffff00dcd10e4  fp: 0xffffffe054d335c0
+		  lr: 0xfffffff00dcfeaa0  fp: 0xffffffe054d33630
+		  lr: 0xfffffff00de13c68  fp: 0xffffffe054d336e0
+		  lr: 0xfffffff00e30162c  fp: 0xffffffe054d336f0
+		  lr: 0xfffffff00dccfcd0  fp: 0xffffffe054d33ae0
+		  lr: 0xfffffff00e126124  fp: 0xffffffe054d33b40
+		  lr: 0xfffffff00e1ee2cc  fp: 0xffffffe054d33bd0
+		  lr: 0xfffffff00de13d34  fp: 0xffffffe054d33c80
+		  lr: 0xfffffff00e30162c  fp: 0xffffffe054d33c90
+		  lr: 0x000000018bcf35dc  fp: 0x0000000000000000
+
+!! panicked during stackshot, skipping panic stackshot !!
+
+Please go to https://panic.apple.com to report this panic
+

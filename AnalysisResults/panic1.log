@@ -1,0 +1,15 @@
+Device: iPhone 8 Plus, iOS 13.5
+Bundle version: 7.0.10
+
+Exception type: EXC_BREAKPOINT (SIGTRAP)
+Exception subtype: (null)
+Exception codes: 0x0000000000000000, 0x0000000184a20b40
+Culprit: Unknown
+
+Triggered by thread: 0
+Thread name: Dispatch queue: com.apple.main-thread
+Call stack:
+0   libxpc.dylib                  	0x0000000184a20b40 0x184a05000 + 113472     	// _xpc_api_misuse
+1   libxpc.dylib                  	0x0000000184a20b38 0x184a05000 + 113464     	// _xpc_api_misuse
+2   libxpc.dylib                  	0x0000000184a155b4 0x184a05000 + 66996      	// _xpc_dictionary_apply_apply
+3   Foundation                    	0x0000000185190b88 0x1850fd000 + 605064     	// -[NSFileManager containerURLForSecurityApplicationGroupIdentifier:]
