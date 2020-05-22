@@ -171,7 +171,7 @@ int link_folders() {
     //printf("Copyiny fakevar dir from: %s\n", FAKEVAR_TMPMOUNT);
     //system("cp -r -a "FAKEVAR_TMPMOUNT"/* "FINAL_FAKEVARDIR"/");
     printf("Copyiny fakevar dir from: %s\n", FAKEVARDIR);
-    system("cp -r -a "FAKEVARDIR"/* "FINAL_FAKEVARDIR"/");
+    system("cp -r "FAKEVARDIR"/* "FINAL_FAKEVARDIR"/");
 
     printf("Linking fakevar dir!\n");
     listdir(FINAL_FAKEVARDIR, 0);
