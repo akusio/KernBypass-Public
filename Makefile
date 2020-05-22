@@ -4,14 +4,14 @@ include $(THEOS)/makefiles/common.mk
 
 TOOL_NAME = changerootfs preparerootfs
 
-LIB_DIR = lib
+LIB_DIR := lib
 
 preparerootfs_FILES = preparerootfs.m
-preparerootfs_CFLAGS = -fobjc-arc -Wno-error=unused-variable -Wno-error=unused-function
+preparerootfs_CFLAGS = $(CFLAGS) -fobjc-arc -Wno-error=unused-variable -Wno-error=unused-function
 
 
 changerootfs_FILES = changerootfs.m
-changerootfs_CFLAGS = -fobjc-arc -Wno-error=unused-variable -Wno-error=unused-function
+changerootfs_CFLAGS = $(CFLAGS) -fobjc-arc -Wno-error=unused-variable -Wno-error=unused-function
 
 ifdef USE_JELBREK_LIB
 	preparerootfs_LDFLAGS = $(LIB_DIR)/jelbrekLib.dylib

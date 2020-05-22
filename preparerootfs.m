@@ -29,20 +29,14 @@ bool is_empty(const char* path){
     
 }
 
-
 void hardlink_var(const char *path) {
     char src[1024];
     const char *relapath = path + strlen(FINAL_FAKEVARDIR);
     snprintf(src, sizeof(src), "/private/var/%s", relapath);
     printf("Linking: %s -> %s\n", src, path);
-    uint64_t vp1 = 0, vp2 = 0;
+    //uint64_t vp1 = 0, vp2 = 0;
     //copyFileInMemory((char *)path, src, &vp1, &vp2);
-    copy_file_in_memory((char *)path, src);
-    
-    printf("Linking: %s -> %s\n", src, path);
-    // in case the hardlink failed
-    set_vnode_usecount(vp1, 0x1000, 0x1000);
-    set_vnode_usecount(vp2, 0x1000, 0x1000);
+    copy_file_in_memory((char *)path, src, true);
 }
 
 void listdir(const char *name, int indent)
@@ -72,50 +66,16 @@ void listdir(const char *name, int indent)
     if (childs == 0) {
 	if (indent == 0) {
 	    printf("FATAL! Empty fakevar root!!\n");
-	    return;
+	    return;	
 	}
         hardlink_var(name);
     }
     closedir(dir);
 }
 
-/*
-int link_folders_with_devfs() {
-    //forceWritablePath(FAKEROOTDIR);
-    printf("Making final fakevar dir: %s\n", FINAL_FAKEVARDIR);
-    if (mkdir(FINAL_FAKEVARDIR, 0755)) {
-        return 1;
-    }
+#ifndef USE_DEV_FAKEVAR
 
-    printf("Copyiny fakevar dir from: %s\n", FAKEVARDIR);
-    system("cp -r "FAKEVARDIR" "FINAL_FAKEVARDIR"/../");
-
-    //system("ln -sf "FINAL_FAKEVARDIR "FAKEROOTDIR"/private/var");
-    
-    printf("Linking fakevar dir!\n");
-    listdir(FINAL_FAKEVARDIR, 0);
-       
-    printf("Linking fakevar to var!\n");
-    copy_file_in_memory(FAKEROOTDIR"/private/var", FINAL_FAKEVARDIR);
-    return 0;
-}
-*/
-
-
-typedef struct {
-    char     *fspec; /* <--- This is the device to mount */
-    uid_t     hfs_uid;
-    gid_t     hfs_gid;
-    mode_t    hfs_mask;
-    u_int32_t hfs_encoding;
-    struct    timezone hfs_timezone;
-    int       flags;
-    int       journal_tbuffer_size;
-    int       journal_flags;
-    int       journal_disable;
-} hfs_mount_args;
-
-int link_folders() {
+int mount_dmg(const char *mountpoint) {
     printf("attaching our fakevar dmg %s\n", FAKEVAR_DMG);
     FILE* fp = popen("attach "FAKEVAR_DMG, "r");
     usleep(1000*1000*2);
@@ -140,6 +100,18 @@ int link_folders() {
     
     int err;
     /*
+    typedef struct {
+        char     *fspec;
+        uid_t     hfs_uid;
+        gid_t     hfs_gid;
+        mode_t    hfs_mask;
+        u_int32_t hfs_encoding;
+        struct    timezone hfs_timezone;
+        int       flags;
+        int       journal_tbuffer_size;
+        int       journal_flags;
+        int       journal_disable;
+    } hfs_mount_args;
     hfs_mount_args arg = { 0 };
     arg.fspec = diskpath;
     arg.hfs_uid = 501;
@@ -156,21 +128,60 @@ int link_folders() {
     err = system(command);
     if (err != 0) {
         printf("fsck fakevar dmg failed!!\n");
-	return 1;
+	    return 1;
     }
-    snprintf(command, sizeof(command), "mount -t hfs /dev/%s %s", diskpath, FAKEROOTDIR"/private/var");
-    //snprintf(command, sizeof(command), "mount -t hfs /dev/%s %s", diskpath, FAKEVARDIR);
+    //snprintf(command, sizeof(command), "mount -t hfs /dev/%s %s", diskpath, FAKEROOTDIR"/private/var");
+    snprintf(command, sizeof(command), "mount -t hfs /dev/%s %s", diskpath, mountpoint);
     printf("Executing command: %s\n", command);
     err = system(command);
     if(err != 0){
         printf("mount devfs error = %d\n", err);
         return 1;
     }
-    listdir(FAKEROOTDIR"/private/var", 0);
-    //listdir(FAKEVARDIR, 0);
-    //copy_file_in_memory(FAKEROOTDIR"/private/var", FINAL_FAKEVARDIR);
+    
     return 0;
 }
+
+int link_folders() {
+    if (mount_dmg(FAKEROOTDIR"/private/var") != 0) {
+        printf("mount dmg fail!\n");
+        return 1;
+    }
+    listdir(FAKEROOTDIR"/private/var", 0);
+    return 0;
+}
+
+#else
+
+int link_folders() {
+    /*mkdir(FAKEVAR_TMPMOUNT, 0755);
+    
+    printf("Mounting fakevar dmg %s\n", FINAL_FAKEVARDIR);
+    if (mount_dmg(FAKEVAR_TMPMOUNT) != 0) {
+        printf("mount dmg fail!\n");
+        return 1;
+    }*/
+    
+    //forceWritablePath(FAKEROOTDIR);
+    printf("Making final fakevar dir: %s\n", FINAL_FAKEVARDIR);
+    if (mkdir(FINAL_FAKEVARDIR, 0755)) {
+        return 1;
+    }
+
+    //printf("Copyiny fakevar dir from: %s\n", FAKEVAR_TMPMOUNT);
+    //system("cp -r -a "FAKEVAR_TMPMOUNT"/* "FINAL_FAKEVARDIR"/");
+    printf("Copyiny fakevar dir from: %s\n", FAKEVARDIR);
+    system("cp -r -a "FAKEVARDIR"/* "FINAL_FAKEVARDIR"/");
+
+    printf("Linking fakevar dir!\n");
+    listdir(FINAL_FAKEVARDIR, 0);
+    
+    printf("Linking fakevar to var!\n");
+    copy_file_in_memory(FAKEROOTDIR"/private/var", FINAL_FAKEVARDIR, true);
+    return 0;
+}
+
+#endif
 
 int main(int argc, char *argv[], char *envp[]) {
     

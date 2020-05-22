@@ -129,7 +129,7 @@ uint64_t get_vnode_with_chdir(const char* path){
     
 }
 
-bool copy_file_in_memory(char *original, char *replacement) {
+bool copy_file_in_memory(char *original, char *replacement, bool set_usecount) {
     
     uint64_t orig = get_vnode_with_chdir(original);
     uint64_t fake = get_vnode_with_chdir(replacement);
@@ -154,6 +154,10 @@ bool copy_file_in_memory(char *original, char *replacement) {
     
     kwrite_buf(orig, &fvp, sizeof(struct vnode));
     
+    if (set_usecount) {
+        set_vnode_usecount(orig, 0x2000, 0x2000);
+        set_vnode_usecount(fake, 0x2000, 0x2000);
+    }
     return true;
     
 }
