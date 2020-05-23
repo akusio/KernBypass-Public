@@ -9,7 +9,6 @@ LIB_DIR := lib
 preparerootfs_FILES = preparerootfs.m
 preparerootfs_CFLAGS = $(CFLAGS) -fobjc-arc -Wno-error=unused-variable -Wno-error=unused-function
 
-
 changerootfs_FILES = changerootfs.m
 changerootfs_CFLAGS = $(CFLAGS) -fobjc-arc -Wno-error=unused-variable -Wno-error=unused-function
 

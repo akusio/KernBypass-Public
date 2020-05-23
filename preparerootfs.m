@@ -5,29 +5,13 @@
 #include "config.h"
 #include "kernel.h"
 #include "vnode_utils.h"
+#include "utils.h"
 
 #include <sys/syscall.h>
 #include <sys/snapshot.h>
 #include <dirent.h>
 #include <sys/stat.h>
 
-bool is_empty(const char* path){
-    
-    DIR* dir = opendir(path);
-    struct dirent* ent;
-    int count = 0;
-    
-    while ((ent = readdir(dir)) != NULL) {
-        count++;
-    }
-    
-    if(count == 2){
-        return YES;
-    }else{
-        return NO;
-    }
-    
-}
 
 void hardlink_var(const char *path) {
     char src[1024];
@@ -163,15 +147,18 @@ int link_folders() {
     }*/
     
     //forceWritablePath(FAKEROOTDIR);
-    printf("Making final fakevar dir: %s\n", FINAL_FAKEVARDIR);
+    /*printf("Making final fakevar dir: %s\n", FINAL_FAKEVARDIR);
     if (mkdir(FINAL_FAKEVARDIR, 0755)) {
         return 1;
-    }
+    }*/
 
     //printf("Copyiny fakevar dir from: %s\n", FAKEVAR_TMPMOUNT);
     //system("cp -r -a "FAKEVAR_TMPMOUNT"/* "FINAL_FAKEVARDIR"/");
     printf("Copyiny fakevar dir from: %s\n", FAKEVARDIR);
-    system("cp -r "FAKEVARDIR"/* "FINAL_FAKEVARDIR"/");
+    //system("cp -r "FAKEVARDIR"/* "FINAL_FAKEVARDIR"/");
+    if (copy_dir(FAKEVARDIR, FINAL_FAKEVARDIR)) {
+        return 1;
+    }
 
     printf("Linking fakevar dir!\n");
     listdir(FINAL_FAKEVARDIR, 0);
