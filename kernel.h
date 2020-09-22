@@ -109,7 +109,7 @@ init_tfp0(void) {
     kern_return_t ret = task_for_pid(mach_task_self(), 0, &tfp0);
     mach_port_t host;
     pid_t pid;
-    
+
     if(ret != KERN_SUCCESS) {
         host = mach_host_self();
         if(MACH_PORT_VALID(host)) {
@@ -134,7 +134,7 @@ static kern_return_t
 kread_buf(kaddr_t addr, void *buf, mach_vm_size_t sz) {
     mach_vm_address_t p = (mach_vm_address_t)buf;
     mach_vm_size_t read_sz, out_sz = 0;
-    
+
     while(sz != 0) {
         read_sz = MIN(sz, vm_kernel_page_size - (addr & vm_kernel_page_mask));
         if(mach_vm_read_overwrite(tfp0, addr, read_sz, p, &out_sz) != KERN_SUCCESS || out_sz != read_sz) {
@@ -158,7 +158,7 @@ kwrite_buf(kaddr_t addr, const void *buf, mach_msg_type_number_t sz) {
     vm_machine_attribute_val_t mattr_val = MATTR_VAL_CACHE_FLUSH;
     mach_vm_address_t p = (mach_vm_address_t)buf;
     mach_msg_type_number_t write_sz;
-    
+
     while(sz != 0) {
         write_sz = (mach_msg_type_number_t)MIN(sz, vm_kernel_page_size - (addr & vm_kernel_page_mask));
         if(mach_vm_write(tfp0, addr, p, write_sz) != KERN_SUCCESS || mach_vm_machine_attribute(tfp0, addr, write_sz, MATTR_CACHE, &mattr_val) != KERN_SUCCESS) {
@@ -180,7 +180,7 @@ get_kbase(kaddr_t *kslide) {
     struct mach_header_64 mh64;
     mach_port_t obj_nm;
     mach_vm_size_t sz;
-    
+
     if(task_info(tfp0, TASK_DYLD_INFO, (task_info_t)&dyld_info, &cnt) == KERN_SUCCESS && dyld_info.all_image_info_size != 0) {
         *kslide = dyld_info.all_image_info_size;
         return VM_KERNEL_LINK_ADDRESS + *kslide;
@@ -213,7 +213,7 @@ get_kbase(kaddr_t *kslide) {
 static kern_return_t
 find_section(kaddr_t sg64_addr, struct segment_command_64 sg64, const char *sect_name, struct section_64 *sp) {
     kaddr_t s64_addr, s64_end;
-    
+
     for(s64_addr = sg64_addr + sizeof(sg64), s64_end = s64_addr + (sg64.cmdsize - sizeof(*sp)); s64_addr < s64_end; s64_addr += sizeof(*sp)) {
         if(kread_buf(s64_addr, sp, sizeof(*sp)) != KERN_SUCCESS) {
             break;
@@ -268,7 +268,7 @@ pfinder_init(pfinder_t *pfinder, kaddr_t kbase) {
     kaddr_t sg64_addr, sg64_end;
     struct mach_header_64 mh64;
     struct section_64 s64;
-    
+
     pfinder_reset(pfinder);
     if(kread_buf(kbase, &mh64, sizeof(mh64)) == KERN_SUCCESS && mh64.magic == MH_MAGIC_64 && mh64.cputype == CPU_TYPE_ARM64 && mh64.filetype == MH_EXECUTE) {
         for(sg64_addr = kbase + sizeof(mh64), sg64_end = sg64_addr + (mh64.sizeofcmds - sizeof(sg64)); sg64_addr < sg64_end; sg64_addr += sg64.cmdsize) {
@@ -302,7 +302,7 @@ static kaddr_t
 pfinder_xref_rd(pfinder_t pfinder, uint32_t rd, kaddr_t start, kaddr_t to) {
     uint64_t x[32] = { 0 };
     uint32_t insn;
-    
+
     for(; start >= pfinder.sec_text.s64.addr && start < pfinder.sec_text.s64.addr + (pfinder.sec_text.s64.size - sizeof(insn)); start += sizeof(insn)) {
         memcpy(&insn, pfinder.sec_text.data + (start - pfinder.sec_text.s64.addr), sizeof(insn));
         if(IS_LDR_X(insn)) {
@@ -335,7 +335,7 @@ static kaddr_t
 pfinder_xref_str(pfinder_t pfinder, const char *str, uint32_t rd) {
     const char *p, *e;
     size_t len;
-    
+
     for(p = pfinder.sec_cstring.data, e = p + pfinder.sec_cstring.s64.size; p < e; p += len) {
         len = strlen(p) + 1;
         if(strncmp(str, p, len) == 0) {
@@ -348,7 +348,7 @@ pfinder_xref_str(pfinder_t pfinder, const char *str, uint32_t rd) {
 static kaddr_t
 pfinder_allproc(pfinder_t pfinder) {
     kaddr_t ref = pfinder_xref_str(pfinder, "shutdownwait", 2);
-    
+
     if(ref == 0) {
         ref = pfinder_xref_str(pfinder, "shutdownwait", 3);                                                                                                                 /* msleep */
     }
@@ -379,8 +379,20 @@ static uint32_t off_vnode_usecount = 0;
 #define kCFCoreFoundationVersionNumber_iOS_12_0    (1535.12)
 #define kCFCoreFoundationVersionNumber_iOS_13_0_b2 (1656)
 #define kCFCoreFoundationVersionNumber_iOS_13_0_b1 (1652.20)
+#define kCFCoreFoundationVersionNumber_iOS_14_0_b1 (1740)
 
 int offset_init() {
+  if(kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_14_0_b1){
+      // ios 14
+      off_p_pid = 0x68;
+      off_p_pfd = 0xf8;
+      off_fd_rdir = 0x40;
+      off_fd_cdir = 0x38;
+      off_vnode_iocount = 0x64;
+      off_vnode_usecount = 0x60;
+      return 0;
+  }
+
     if(kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_13_0_b2){
         // ios 13
         off_p_pid = 0x68;
@@ -391,12 +403,12 @@ int offset_init() {
         off_vnode_usecount = 0x60;
         return 0;
     }
-    
+
     if(kCFCoreFoundationVersionNumber == kCFCoreFoundationVersionNumber_iOS_13_0_b1){
         //ios 13b1
         return -1;
     }
-    
+
     if(kCFCoreFoundationVersionNumber <= kCFCoreFoundationVersionNumber_iOS_13_0_b1
        && kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_12_0){
         //ios 12
@@ -408,7 +420,7 @@ int offset_init() {
         off_vnode_usecount = 0x60;
         return 0;
     }
-    
+
     return -1;
 }
 
@@ -441,31 +453,31 @@ int init_kernel() {
         return 1;
     }
     uint64_t kbase = get_kbase(&kslide);
-    
+
     if(kbase == 0){
         printf("failed get_kbase\n");
         return 1;
     }
-    
+
     int err = init_with_kbase(tfp0, kbase, NULL);
     if (err) {
         printf("init failed: %d\n", err);
         return 1;
     }
-    
+
     err = offset_init();
     if (err) {
         printf("offset init failed: uint64_t proc_of_pid(pid_t pid) {
-    
+
     uint64_t proc = kernel_read64(allproc);
     uint64_t current_pid = 0;
-    
+
     while(proc){
         current_pid = kernel_read32(proc + off_p_pid);
         if (current_pid == pid) return proc;
         proc = kernel_read64(proc);
     }
-    
+
     return 0;
 }%d\n", err);
         return 1;
@@ -474,16 +486,16 @@ int init_kernel() {
 }
 #else
 uint64_t proc_of_pid(pid_t pid) {
-    
+
     uint64_t proc = kernel_read64(allproc);
     uint64_t current_pid = 0;
-    
+
     while(proc){
         current_pid = kernel_read32(proc + off_p_pid);
         if (current_pid == pid) return proc;
         proc = kernel_read64(proc);
     }
-    
+
     return 0;
 }
 
@@ -516,26 +528,26 @@ int init_kernel() {
         return 1;
     }
     uint64_t kbase = get_kbase(&kslide);
-    
+
     if(kbase == 0){
         printf("failed get_kbase\n");
         return 1;
     }
     pfinder_t pfinder;
     kern_return_t err = pfinder_init(&pfinder, kbase);
-    
+
     if(err != KERN_SUCCESS){
         printf("failed pfinder_init\n");
         return 1;
     }
-    
+
     err = pfinder_init_offsets(pfinder);
-    
+
     if(err != KERN_SUCCESS){
         printf("failed pfinder_init_offsets\n");
         return 1;
     }
-        
+
     err = offset_init();
     if (err) {
         printf("offset init failed: %d\n", err);
