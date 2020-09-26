@@ -2,7 +2,7 @@
 #import <CoreFoundation/CoreFoundation.h>
 #import "Tweak.h"
 
-#define PLIST_PATH @"/var/mobile/Library/Preferences/jp.akusio.kernbypass.plist"
+#define PLIST_PATH @"/var/mobile/Library/Preferences/jp.akusio.kernbypass2.plist"
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
 extern CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
