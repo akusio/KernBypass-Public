@@ -3,7 +3,7 @@ ARCHS = arm64
 include $(THEOS)/makefiles/common.mk
 
 TOOL_NAME = changerootfs preparerootfs
-TARGET := iphone:clang:10.3:5.1
+TARGET := iphone:clang:14.0:14.0
 
 LIB_DIR := lib
 
