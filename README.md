@@ -17,6 +17,7 @@ kernel level jailbreak detection bypass
 - Choicy Compatibility @level3tjg
 - fakevar version added @NyaMisty
 - Preferences refresh, overall code optimization @ichitaso
+- Icon design by @JannikCrack and @ichitaso
 
 
 ## WARNING
