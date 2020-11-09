@@ -1,3 +1,15 @@
+.DS_Store
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+.theos
+theos
+theos/
+_/
+obj/
+packages/
+*.deb
 *.o
 .theos/*
 debs/*
