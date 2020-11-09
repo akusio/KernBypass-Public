@@ -2,7 +2,7 @@
 kernel level jailbreak detection bypass
 
 ## Support Devices
-- iOS12.0-14.1? (confirmed on iOS12.4 and above)
+- iOS12.0-14.1 (confirmed on iOS12.4 and above)
 - A7-A13
 - unc0ver or checkra1n or odysseyra1n or Odyssey
 
@@ -20,9 +20,9 @@ kernel level jailbreak detection bypass
 
 
 ## WARNING
-**This tweak is the kernel level. There is NO warranty. Run it at your own risk.**
-**Note: Not all applications are supported.**
-**(Please think that most don't work)**
+**This tweak is the kernel level. There is NO warranty. Run it at your own risk.**  
+**Note: Not all applications are supported.**  
+**(Please think that most don't work)**  
 
 ## Getting Started
 ### Installation

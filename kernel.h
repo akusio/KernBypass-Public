@@ -404,7 +404,7 @@ int offset_init() {
         return -1;
     }
 
-    if (kCFCoreFoundationVersionNumber <= kCFCoreFoundationVersionNumber_iOS_13_0_b1 &&
+    if (kCFCoreFoundationVersionNumber < kCFCoreFoundationVersionNumber_iOS_13_0_b1 &&
         kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_12_0) {
         //ios 12
         off_p_pid = 0x60;
@@ -473,7 +473,9 @@ int init_kernel() {
     }
     return 0;
 }
+
 #else
+
 uint64_t proc_of_pid(pid_t pid) {
 
     uint64_t proc = kernel_read64(allproc);
