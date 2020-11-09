@@ -10,14 +10,3 @@ _/
 obj/
 packages/
 *.deb
-*.o
-.theos/*
-debs/*
-*.deb
-*.dylib
-**/.theos/*
-*/.theos/*
-*.sublime-workspace
-_/*
-*/obj/*
-obj/*
