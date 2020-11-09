@@ -1,13 +1,12 @@
 //---------jelbrekLib------//
 //Thanks to @Jakeashacks
 //original code : https://github.com/jakeajames/jelbrekLib/blob/master/vnode_utils.h
+#import <sys/mount.h>
+#import <sys/event.h>
 
 int vnode_lookup(const char *path, int flags, uint64_t *vnode, uint64_t vfs_context);
 uint64_t get_vfs_context(void);
 int vnode_put(uint64_t vnode);
-
-#import <sys/mount.h>
-#import <sys/event.h>
 
 typedef struct {
     union {
@@ -26,7 +25,7 @@ typedef struct {
     };
 } lck_mtx_t;
 
-typedef struct vnode_resolve* vnode_resolve_t;
+typedef struct vnode_resolve *vnode_resolve_t;
 
 typedef uint32_t kauth_action_t;
 LIST_HEAD(buflists, buf);
@@ -88,28 +87,24 @@ struct vnode {
     //#endif /* CONFIG_TRIGGERS */
 };
 
-void print_vnode_usecount(uint64_t vnode_ptr){
-    
-    if(vnode_ptr == 0) return;
-    
+void print_vnode_usecount(uint64_t vnode_ptr) {
+    if (vnode_ptr == 0) return;
     uint32_t usecount = kernel_read32(vnode_ptr + off_vnode_usecount);
-    
-    uint32_t iocount = kernel_read32(vnode_ptr + off_vnode_iocount);
-    
+    uint32_t iocount = kernel_read32(vnode_ptr + off_vnode_iocount);    
     printf("vp = 0x%llx, usecount = %d, iocount = %d\n", vnode_ptr, usecount, iocount);
 }
 
-void set_vnode_usecount(uint64_t vnode_ptr, uint32_t usecount, uint32_t iocount){
-    if(vnode_ptr == 0) return;
+void set_vnode_usecount(uint64_t vnode_ptr, uint32_t usecount, uint32_t iocount) {
+    if (vnode_ptr == 0) return;
     kernel_write32(vnode_ptr + off_vnode_usecount, usecount);
     kernel_write32(vnode_ptr + off_vnode_iocount, iocount);
 }
 
-uint64_t get_vnode_with_chdir(const char* path){
+uint64_t get_vnode_with_chdir(const char *path) {
     
     int err = chdir(path);
     
-    if(err) return 0;
+    if (err) return 0;
     
     uint64_t proc = proc_of_pid(getpid());
     
@@ -134,7 +129,7 @@ bool copy_file_in_memory(char *original, char *replacement, bool set_usecount) {
     uint64_t orig = get_vnode_with_chdir(original);
     uint64_t fake = get_vnode_with_chdir(replacement);
     
-    if(orig == 0 || fake == 0){
+    if (orig == 0 || fake == 0) {
         printf("hardlink error orig = %llu, fake = %llu\n", orig, fake);
         return false;
     }
@@ -151,15 +146,14 @@ bool copy_file_in_memory(char *original, char *replacement, bool set_usecount) {
     fvp.v_ncchildren = rvp.v_ncchildren;
     fvp.v_nclinks = rvp.v_nclinks;
     
-    
     kwrite_buf(orig, &fvp, sizeof(struct vnode));
     
     if (set_usecount) {
         set_vnode_usecount(orig, 0x2000, 0x2000);
         set_vnode_usecount(fake, 0x2000, 0x2000);
     }
-    return true;
     
+    return true;
 }
 
 #define	MNT_RDONLY	0x00000001	/* read only filesystem */

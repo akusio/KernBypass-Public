@@ -1,10 +1,12 @@
-# KernBypass
+# KernBypass (Unofficial)
 kernel level jailbreak detection bypass
 
 ## Support Devices
-- iOS12.0-14.x? (confirmed on iOS12.4 and above)
+- iOS12.0-14.1? (confirmed on iOS12.4 and above)
 - A7-A13
-- unc0ver or checkra1n
+- unc0ver or checkra1n or odysseyra1n or Odyssey
+
+**Note: Not compatible with iOS 14.2**
 
 ## Credits
 - maphys by 0x7ff
@@ -12,28 +14,36 @@ kernel level jailbreak detection bypass
 - jelbrekLib by @Jakeashacks
 - Translated by sohsatoh
 - iOS12 support by dora2-iOS
+- Choicy Compatibility @level3tjg
+- fakevar version added @NyaMisty
+- Preferences refresh, overall code optimization @ichitaso
 
 
 ## WARNING
 **This tweak is the kernel level. There is NO warranty. Run it at your own risk.**
+**Note: Not all applications are supported.**
+**(Please think that most don't work)**
 
 ## Getting Started
 ### Installation
-1. Remove file `/var/mobile/Library/Preferences/jp.akusio.kernbypass.plist` if exist.
-2. [download](https://github.com/XsF1re/KernBypass-Public/blob/master/packages/jp.akusio.kernbypass_0.0.3_iphoneos-arm.deb) and install the deb file.
-### Setting up KernBypass
-3. In terminal, run `su` and type your password.
-4. Download the fakevar.zip from http://repo.misty.moe/apt/fakevar13.zip, and extract it to /var/mobile/fakevar (whatever method you use to extract, make sure there’s /var/mobile/fakevar/mobile)
+1. Added my private repo: https://cydia.ichitaso.com
+2. ​Install from Cydia or other package manager
+### Setting up KernBypass (Manual)
+3. ​**If you were using a previous version, be sure to Reboot first.**
+4. In terminal, run `su` and type your password.
 5. Run `preparerootfs`
 6. Run `changerootfs &` (don't forget "&").
 7. Run `disown %1`
 8. Done. The changerootfs is now a daemon.
 
+### Setting up KernBypass (GUI)
+1. Settings -> KernBypass -> Enable KernBypass
+
 ### Selecting apps to bypass
 1. After installing changerootfs, open Preferences > KernBypass, then select the applications to be enabled the bypass.
 
 ## Uninstall
-1. Just uninstall from Cydia.
+1. Just uninstall from Cydia or other package manager.
 2. REBOOT!!!
 
 ## License
