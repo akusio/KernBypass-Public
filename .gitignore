@@ -3,7 +3,6 @@ Icon?
 ._*
 .Spotlight-V100
 .Trashes
-
 .theos
 theos
 theos/
@@ -11,3 +10,14 @@ _/
 obj/
 packages/
 *.deb
+*.o
+.theos/*
+debs/*
+*.deb
+*.dylib
+**/.theos/*
+*/.theos/*
+*.sublime-workspace
+_/*
+*/obj/*
+obj/*
