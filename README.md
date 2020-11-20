@@ -20,7 +20,7 @@ kernel level jailbreak detection bypass
 ## Getting Started
 ### Installation
 1. Remove file `/var/mobile/Library/Preferences/jp.akusio.kernbypass.plist` if exist.
-2. [download](https://github.com/XsF1re/KernBypass-Public/blob/master/packages/jp.akusio.kernbypass_0.0.3_iphoneos-arm.deb) and install the deb file.
+2. [download](https://github.com/XsF1re/KernBypass-Public/releases) and install the deb file.
 ### Setting up KernBypass
 3. In terminal, run `su` and type your password.
 4. Download the fakevar.zip from http://repo.misty.moe/apt/fakevar13.zip, and extract it to /var/mobile/fakevar (whatever method you use to extract, make sure there’s /var/mobile/fakevar/mobile)
