@@ -4,6 +4,7 @@
 
 #define PLIST_PATH @"/var/mobile/Library/Preferences/jp.akusio.kernbypass2.plist"
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+#define IN_SPRINGBOARD ([[NSBundle mainBundle].bundleIdentifier isEqualToString:@"com.apple.springboard"])
 
 extern CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
 
@@ -24,7 +25,7 @@ void bypassApplication(NSString *bundleID){
     NSDictionary* info = @{
         @"Pid" : [NSNumber numberWithInt:pid]
     };
-    CFNotificationCenterPostNotification(CFNotificationCenterGetDistributedCenter(), (__bridge CFStringRef)@"jp.akusio.chrooter", NULL, (__bridge CFDictionaryRef)info, YES);   
+    CFNotificationCenterPostNotification(CFNotificationCenterGetDistributedCenter(), (__bridge CFStringRef)@"jp.akusio.chrooter", NULL, (__bridge CFDictionaryRef)info, YES);
     kill(pid, SIGSTOP);
 }
 
