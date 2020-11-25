@@ -284,7 +284,6 @@ kern_return_t
 init_tfp0(void) {
 	kern_return_t ret = task_for_pid(mach_task_self(), 0, &tfp0);
 	mach_port_t host;
-	pid_t pid;
 
 	if(ret != KERN_SUCCESS) {
 		host = mach_host_self();
@@ -295,10 +294,7 @@ init_tfp0(void) {
 		}
 	}
 	if(ret == KERN_SUCCESS && MACH_PORT_VALID(tfp0)) {
-		if(pid_for_task(tfp0, &pid) == KERN_SUCCESS && pid == 0) {
-			return ret;
-		}
-		mach_port_deallocate(mach_task_self(), tfp0);
+		return ret;
 	}
 	return KERN_FAILURE;
 }
