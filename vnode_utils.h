@@ -98,11 +98,11 @@ uint64_t get_vnode_with_chdir(const char*);
 
 bool copy_file_in_memory(char *, char *, bool);
 
-#define	MNT_RDONLY	0x00000001	/* read only filesystem */
-#define	MNT_SYNCHRONOUS	0x00000002	/* file system written synchronously */
-#define	MNT_NOEXEC	0x00000004	/* can't exec from filesystem */
-#define	MNT_NOSUID	0x00000008	/* don't honor setuid bits on fs */
-#define	MNT_ROOTFS	0x00004000	/* identifies the root filesystem */
+#define    MNT_RDONLY    0x00000001    /* read only filesystem */
+#define    MNT_SYNCHRONOUS    0x00000002    /* file system written synchronously */
+#define    MNT_NOEXEC    0x00000004    /* can't exec from filesystem */
+#define    MNT_NOSUID    0x00000008    /* don't honor setuid bits on fs */
+#define    MNT_ROOTFS    0x00004000    /* identifies the root filesystem */
 unsigned off_v_mount;             // vnode::v_mount
 unsigned off_mnt_flag;            // mount::mnt_flag
 /*
@@ -116,7 +116,6 @@ void forceWritablePath(const char *path) {
     v_flag &= ~MNT_NOSUID;
     v_flag &= ~MNT_RDONLY;
     v_flag &= ~MNT_ROOTFS;
-
     printf("[*] Flags now 0x%x\n", v_flag);
     kernel_write32(v_mount + off_mnt_flag, v_flag);
 }

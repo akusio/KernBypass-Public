@@ -1,0 +1,13 @@
+#!/bin/sh
+
+echo ""
+echo ""
+echo ""
+echo "Reboot after uninstalling!"
+echo "Reboot after uninstalling!"
+echo "Reboot after uninstalling!"
+echo ""
+echo ""
+echo ""
+
+exit 0

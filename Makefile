@@ -1,26 +1,41 @@
-ARCHS = arm64
+ARCHS = arm64 arm64e
+DEBUG = 0
+FINALPACKAGE = 1
 
-include $(THEOS)/makefiles/common.mk
+TARGET := iphone:clang:14.0:12.1.2
+MIN_IOS_SDK_VERSION = 7.0
 
-TOOL_NAME = changerootfs preparerootfs
-TARGET := iphone:clang:11.2:11.2
+THEOS_DEVICE_IP = localhost -p 2222
 
-LIB_DIR := lib
+TOOL_NAME = preparerootfs changerootfs
 
 preparerootfs_FILES = preparerootfs.m kernel.m libdimentio.c vnode_utils.c
-preparerootfs_CFLAGS = $(CFLAGS) -fobjc-arc -Wno-error=unused-variable -Wno-error=unused-function -D USE_DEV_FAKEVAR
+preparerootfs_CFLAGS = -objc-arc -D USE_DEV_FAKEVAR
 preparerootfs_FRAMEWORKS = IOKit
+preparerootfs_CODESIGN_FLAGS = -Sent.plist
 
 changerootfs_FILES = changerootfs.m kernel.m libdimentio.c vnode_utils.c
-changerootfs_CFLAGS = $(CFLAGS) -fobjc-arc -Wno-error=unused-variable -Wno-error=unused-function
+changerootfs_CFLAGS = -objc-arc
 changerootfs_FRAMEWORKS = IOKit
+changerootfs_CODESIGN_FLAGS = -Sent.plist
+
+SUBPROJECTS += zzzzzzzzznotifychroot
+SUBPROJECTS += kernbypassprefs
+SUBPROJECTS += kernbypassd
+SUBPROJECTS += prerm
+SUBPROJECTS += KernBypassdCC
+
+include $(THEOS)/makefiles/common.mk
+include $(THEOS_MAKE_PATH)/tool.mk
+include $(THEOS_MAKE_PATH)/aggregate.mk
+
+LIB_DIR := lib
 
 ifdef USE_JELBREK_LIB
 	preparerootfs_LDFLAGS = $(LIB_DIR)/jelbrekLib.dylib
 	changerootfs_LDFLAGS = $(LIB_DIR)/jelbrekLib.dylib
 endif
 
-include $(THEOS_MAKE_PATH)/tool.mk
 
 ifdef USE_JELBREK_LIB
 before-package::
@@ -30,8 +45,13 @@ endif
 before-package::
 	mkdir -p $(THEOS_STAGING_DIR)/usr/lib/
 	cp $(LIB_DIR)/jelbrekLib.dylib $(THEOS_STAGING_DIR)/usr/lib
-	/usr/bin/ldid -S./ent.plist $(THEOS_STAGING_DIR)/usr/bin/changerootfs
-	/usr/bin/ldid -S./ent.plist $(THEOS_STAGING_DIR)/usr/bin/preparerootfs
+	cp ./layout/DEBIAN/* $(THEOS_STAGING_DIR)/DEBIAN
+	chmod -R 755 $(THEOS_STAGING_DIR)
+	chmod 6755 $(THEOS_STAGING_DIR)/usr/bin/kernbypassd
+	chmod 666 $(THEOS_STAGING_DIR)/DEBIAN/control
 
-SUBPROJECTS += zzzzzzzzznotifychroot
-include $(THEOS_MAKE_PATH)/aggregate.mk
+after-package::
+	make clean
+
+after-install::
+	install.exec "sbreload"

@@ -1,6 +1,6 @@
-#include <stdio.h>
 #import <Foundation/Foundation.h>
-#include <CommonCrypto/CommonCrypto.h>
+#import <CommonCrypto/CommonCrypto.h>
+#include <stdio.h>
 
 #include "config.h"
 #include "kernel.h"
@@ -18,18 +18,14 @@ void hardlink_var(const char *path) {
     const char *relapath = path + strlen(FINAL_FAKEVARDIR);
     snprintf(src, sizeof(src), "/private/var/%s", relapath);
     printf("Linking: %s -> %s\n", src, path);
-    //uint64_t vp1 = 0, vp2 = 0;
-    //copyFileInMemory((char *)path, src, &vp1, &vp2);
     copy_file_in_memory((char *)path, src, true);
 }
 
-void listdir(const char *name, int indent)
-{
+void listdir(const char *name, int indent) {
     DIR *dir;
     struct dirent *entry;
 
-    if (!(dir = opendir(name)))
-        return;
+    if (!(dir = opendir(name))) return;
     
     char path[1024];
     int childs = 0;
@@ -48,10 +44,10 @@ void listdir(const char *name, int indent)
         }
     }
     if (childs == 0) {
-	if (indent == 0) {
-	    printf("FATAL! Empty fakevar root!!\n");
-	    return;	
-	}
+        if (indent == 0) {
+            printf("FATAL! Empty fakevar root!!\n");
+            return;
+        }
         hardlink_var(name);
     }
     closedir(dir);
@@ -62,7 +58,7 @@ void listdir(const char *name, int indent)
 int mount_dmg(const char *mountpoint) {
     printf("attaching our fakevar dmg %s\n", FAKEVAR_DMG);
     FILE* fp = popen("attach "FAKEVAR_DMG, "r");
-    usleep(1000*1000*2);
+    usleep(1000 * 1000 * 2);
     char buf[100] = {0};
     size_t ret = fread(buf, 1, sizeof(buf) - 1, fp);
     if (ret <= 0) {
@@ -70,11 +66,9 @@ int mount_dmg(const char *mountpoint) {
         return 1;
     }
     printf("got attach command output (%zu bytes): %s\n", ret, buf);
-    while (buf[--ret] == '\n')
-        ;
+    while (buf[--ret] == '\n');
     buf[ret+1] = 0;
-        
-    
+
     char *diskpath = strrchr(buf, '\n') + 1;
     if (!(diskpath-1) || strncmp(diskpath, "disk", 4) != 0) {
         printf("Unexpected attach output: %s", diskpath);
@@ -106,7 +100,7 @@ int mount_dmg(const char *mountpoint) {
         printf("mount fakevar fs error = %d\n", err);
         return 1;
     }*/
-    char command[1000] = { 0 };
+    char command[1000] = {0};
     snprintf(command, sizeof(command), "fsck_hfs /dev/%s", diskpath);
     printf("Executing command: %s\n", command);
     err = system(command);
@@ -114,15 +108,13 @@ int mount_dmg(const char *mountpoint) {
         printf("fsck fakevar dmg failed!!\n");
 	    return 1;
     }
-    //snprintf(command, sizeof(command), "mount -t hfs /dev/%s %s", diskpath, FAKEROOTDIR"/private/var");
     snprintf(command, sizeof(command), "mount -t hfs /dev/%s %s", diskpath, mountpoint);
     printf("Executing command: %s\n", command);
     err = system(command);
-    if(err != 0){
+    if (err != 0) {
         printf("mount devfs error = %d\n", err);
         return 1;
     }
-    
     return 0;
 }
 
@@ -138,24 +130,7 @@ int link_folders() {
 #else
 
 int link_folders() {
-    /*mkdir(FAKEVAR_TMPMOUNT, 0755);
-    
-    printf("Mounting fakevar dmg %s\n", FINAL_FAKEVARDIR);
-    if (mount_dmg(FAKEVAR_TMPMOUNT) != 0) {
-        printf("mount dmg fail!\n");
-        return 1;
-    }*/
-    
-    //forceWritablePath(FAKEROOTDIR);
-    /*printf("Making final fakevar dir: %s\n", FINAL_FAKEVARDIR);
-    if (mkdir(FINAL_FAKEVARDIR, 0755)) {
-        return 1;
-    }*/
-
-    //printf("Copyiny fakevar dir from: %s\n", FAKEVAR_TMPMOUNT);
-    //system("cp -r -a "FAKEVAR_TMPMOUNT"/* "FINAL_FAKEVARDIR"/");
     printf("Copyiny fakevar dir from: %s\n", FAKEVARDIR);
-    //system("cp -r "FAKEVARDIR"/* "FINAL_FAKEVARDIR"/");
     if (copy_dir(FAKEVARDIR, FINAL_FAKEVARDIR)) {
         return 1;
     }
@@ -172,7 +147,7 @@ int link_folders() {
 
 int main(int argc, char *argv[], char *envp[]) {
     
-    if(!is_empty(FAKEROOTDIR) && access(FAKEROOTDIR"/private/var/containers", F_OK) == 0){
+    if (!is_empty(FAKEROOTDIR) && access(FAKEROOTDIR"/private/var/containers", F_OK) == 0) {
         printf("error already mounted\n");
         return 1;
     }
@@ -182,7 +157,7 @@ int main(int argc, char *argv[], char *envp[]) {
         return 1;
     }
     
-    if (is_empty(FAKEROOTDIR)){
+    if (is_empty(FAKEROOTDIR)) {
 
         int fd = open("/", O_RDONLY);
         
@@ -191,11 +166,11 @@ int main(int argc, char *argv[], char *envp[]) {
         printf("trying to mount kernbypass snapshot...");
         err = fs_snapshot_mount(fd, FAKEROOTDIR, "kernbypass", 0);
         
-        if(err != 0){
+        if (err != 0) {
             printf("failed to mount kernbypass snapshot(error %d), fallbacking to orig-fs\n", err);
 
             err = fs_snapshot_mount(fd, FAKEROOTDIR, "orig-fs", 0);
-            if(err != 0){
+            if (err != 0) {
                 printf("mount snapshot error = %d\n", err);
                 return 1;
             }
@@ -203,7 +178,7 @@ int main(int argc, char *argv[], char *envp[]) {
         
         err = mount("devfs", FAKEROOTDIR"/dev", 0, 0);
         
-        if(err != 0){
+        if (err != 0) {
             printf("mount devfs error = %d\n", err);
             return 1;
         }
