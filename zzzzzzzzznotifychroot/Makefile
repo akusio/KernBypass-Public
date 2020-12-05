@@ -1,11 +1,8 @@
 ARCHS = arm64 arm64e
-include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = zzzzzzzzzNotifyChroot
+$(TWEAK_NAME)_FILES = Tweak.x
+$(TWEAK_NAME)_CFLAGS = -fobjc-arc
 
-zzzzzzzzzNotifyChroot_FILES = Tweak.x
-zzzzzzzzzNotifyChroot_CFLAGS = -fobjc-arc
-
+include $(THEOS)/makefiles/common.mk
 include $(THEOS_MAKE_PATH)/tweak.mk
-SUBPROJECTS += kernbypassprefs
-include $(THEOS_MAKE_PATH)/aggregate.mk

@@ -1,10 +1,17 @@
-Package: jp.akusio.kernbypass
-Name: KernBypass
-Version: 0.0.2
-Depends: mobilesubstrate, applist, preferenceloader, firmware(>=12.0)
+Author: akusio
+Maintainer: ichitaso
+Name: KernBypass (Unofficial)
+Package: jp.akusio.kernbypass-unofficial
+Pre-Depends: firmware (>= 12.0), firmware (<< 15.0)
+Depends: mobilesubstrate, preferenceloader
+Conflicts: jp.akusio.kernbypass, com.apple.memecity
+Replaces: jp.akusio.kernbypass-unofficial
+Section: System
+Version: 0.0.5
 Architecture: iphoneos-arm
 Description: kernel level jailbreak detection bypass.
-Depiction: http://akusio.github.io/descriptions/kernbypass/index.html
-Maintainer: akusio
-Author: akusio
-Section: System
+Depiction: https://cydia.ichitaso.com/depiction/kernbypass.html
+Homepage: https://ichitaso.com
+dev: akusio, Misty, ichitaso, XsF1re 
+Tag: purpose::extension, compatible::ios12, compatible::ios13, compatible::ios14
+Icon: file:///Library/PreferenceBundles/KernBypassPrefs.bundle/icon@2x.png

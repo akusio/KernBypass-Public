@@ -1,0 +1,17 @@
+#!/bin/sh
+
+rm -fr /tmp/changerootfsMem
+rm -fr /var/mobile/kernbypassReboot
+rm -fr /tmp/kernbypassAlert
+
+echo ""
+echo ""
+echo ""
+echo "Reboot after uninstalling!"
+echo "Reboot after uninstalling!"
+echo "Reboot after uninstalling!"
+echo ""
+echo ""
+echo ""
+
+exit 0

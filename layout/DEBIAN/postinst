@@ -1,0 +1,25 @@
+#!/bin/sh
+
+DIR=/var/mobile/Library/Preferences
+
+if [ -f ${DIR}/jp.akusio.kernbypass.plist ]; then
+    touch /var/mobile/kernbypassReboot
+    mv ${DIR}/jp.akusio.kernbypass.plist ${DIR}/jp.akusio.kernbypass-unofficial.plist
+fi
+
+if [ -f ${DIR}/jp.akusio.kernbypass2.plist ]; then
+    touch /var/mobile/kernbypassReboot
+    mv ${DIR}/jp.akusio.kernbypass2.plist ${DIR}/jp.akusio.kernbypass-unofficial.plist
+fi
+
+if [ -f ${DIR}/com.apple.memecity.plist ]; then
+    touch /var/mobile/kernbypassReboot
+    mv ${DIR}/com.apple.memecity.plist ${DIR}/jp.akusio.kernbypass-unofficial.plist
+fi
+
+chown -R mobile:mobile /var/mobile/fakevar
+
+chmod 6755 /usr/bin/kernbypassd
+chown root:wheel /usr/bin/kernbypassd
+
+exit 0
