@@ -13,29 +13,29 @@ extern CFNotificationCenterRef CFNotificationCenterGetDistributedCenter(void);
 bool change_rootvnode(uint64_t vp, pid_t pid) {
     
     if (!vp) return false;
-    printf("vp:%"PRIx64"\n",vp);
+    //printf("vp:%"PRIx64"\n",vp);
 
     uint64_t proc = proc_of_pid(pid);
-    printf("getting proc_t:%"PRIx64"\n",proc);
+    //printf("getting proc_t:%"PRIx64"\n",proc);
 
     if (!proc) return false;
 
     uint64_t filedesc = kernel_read64(proc + off_p_pfd);
-    printf("reading pfd:%"PRIx64"\n",filedesc);
+    //printf("reading pfd:%"PRIx64"\n",filedesc);
 
     kernel_write64(filedesc + off_fd_cdir, vp);
-    printf("writing fd_cdir:%"PRIx64"\n",(filedesc + off_fd_cdir));
+    //printf("writing fd_cdir:%"PRIx64"\n",(filedesc + off_fd_cdir));
 
     kernel_write64(filedesc + off_fd_rdir, vp);
-    printf("writing fd_rdir:%"PRIx64"\n",(filedesc + off_fd_rdir));
+    //printf("writing fd_rdir:%"PRIx64"\n",(filedesc + off_fd_rdir));
 
     uint32_t fd_flags = kernel_read32(filedesc + 0x58);
-    printf("setting up fd_flags:%"PRIx64"\n",filedesc + 0x58);
+    //printf("setting up fd_flags:%"PRIx64"\n",filedesc + 0x58);
 
     fd_flags |= 1; // FD_CHROOT = 1;
     
     kernel_write32(filedesc + 0x58, fd_flags);
-    printf("finish fd_flags:%"PRIx32"\n",fd_flags);
+    //printf("finish fd_flags:%"PRIx32"\n",fd_flags);
     return true;
     
 }
@@ -84,9 +84,6 @@ int main(int argc, char *argv[], char *envp[]) {
                                     CFNotificationSuspensionBehaviorDeliverImmediately);
 
     printf("start changerootfs\n");
-
-    FILE *fp = fopen(kernbypassMem, "w");
-    fclose(fp);
 
     CFRunLoopRun();
 

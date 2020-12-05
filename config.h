@@ -13,6 +13,8 @@
 #define Notify_Preferences "jp.akusio.kernbypass.preferencechanged"
 #define Notify_Alert "jp.akusio.kernbypass.alert"
 #define Notify_Chrooter "jp.akusio.chrooter"
+#define Notify_KernBypassd "jp.akusio.kernbypass.kernbypassd"
 
-#define kernbypassMem "/tmp/kernbypassMem"
 #define changerootfsMem "/tmp/changerootfsMem"
+#define rebootMem "/var/mobile/kernbypassReboot"
+#define alertMem "/tmp/kernbypassAlert"

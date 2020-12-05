@@ -11,16 +11,11 @@ int main(int argc, char **argv, char **envp) {
                 printf("Disable kernbypassd\n");
             }
         }
-        // Delete Check file
-        if ([manager fileExistsAtPath:@kernbypassMem]) {
-            [manager removeItemAtPath:@kernbypassMem error:nil];
-            printf("Delete Check file\n");
-        }
         // kill changerootfs
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            system("killall changerootfs");
-#pragma clang diagnostic pop
+        #pragma clang diagnostic push
+        #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        system("killall -9 changerootfs");
+        #pragma clang diagnostic pop
     }
 	return 0;
 }

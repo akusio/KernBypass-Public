@@ -1,10 +1,7 @@
 #include <spawn.h>
 #import <dlfcn.h>
 #import <sys/sysctl.h>
-#include "../utils.h"
 #include "../config.h"
-
-static BOOL autoEnabled;
 
 static void easy_spawn(const char *args[]) {
     pid_t pid;
@@ -12,6 +9,36 @@ static void easy_spawn(const char *args[]) {
     posix_spawn(&pid, args[0], NULL, NULL, (char * const*)args, NULL);
     waitpid(pid, &status, WEXITED);
 }
+
+static BOOL isProcessRunning(NSString *processName) {
+    BOOL running = NO;
+
+    NSString *command = [NSString stringWithFormat:@"ps ax | grep %@ | grep -v grep | wc -l", processName];
+
+    FILE *pf;
+    char data[512];
+
+    pf = popen([command cStringUsingEncoding:NSASCIIStringEncoding],"r");
+
+    if (!pf) {
+        fprintf(stderr, "Could not open pipe for output.\n");
+        return NO;
+    }
+
+    fgets(data, 512, pf);
+
+    int val = (int)[[NSString stringWithUTF8String:data] integerValue];
+    if (val != 0) {
+        running = YES;
+    }
+
+    if (pclose(pf) != 0) {
+        fprintf(stderr," Error: Failed to close command stream \n");
+    }
+
+    return running;
+}
+
 
 #define FLAG_PLATFORMIZE (1 << 1)
 
@@ -52,7 +79,7 @@ int main(int argc, char **argv, char **envp) {
             exit(EXIT_FAILURE);
         }
 
-        if (autoEnabled && access(kernbypassMem, F_OK) != 0) {
+        if (isProcessRunning(@"changerootfs") == NO) {
             NSFileManager *manager = [NSFileManager defaultManager];
             NSString *path = @FAKEROOTDIR;
 
@@ -79,21 +106,16 @@ int main(int argc, char **argv, char **envp) {
 
             if ([manager fileExistsAtPath:path]) {
                 // preparerootfs
-                if (!is_empty(FAKEROOTDIR) && access(FAKEROOTDIR"/private/var/containers", F_OK) == 0) {
-                    printf("error already mounted\n");
+                if (access(FAKEROOTDIR"/private/var/containers", F_OK) == 0) {
+                    printf("preparerootfs already done\n");
                 } else {
                     printf("/usr/bin/preparerootfs\n");
                     easy_spawn((const char *[]){"/usr/bin/preparerootfs", NULL});
-                    sleep(1);
+                    sleep(3);
                 }
                 // changerootfs
                 printf("/usr/bin/changerootfs &\n");
                 easy_spawn((const char *[]){"/usr/bin/changerootfs", "&", NULL});
-
-                sleep(1);
-
-                printf("disown %%1\n");
-                easy_spawn((const char *[]){"disown", "%1", NULL});
 
                 printf("RUNNING DAEMON\n");
 
@@ -104,35 +126,16 @@ int main(int argc, char **argv, char **envp) {
             }
         } else if (access(changerootfsMem, F_OK) == 0) {
             // kill changerootfs
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            system("killall changerootfs");
-#pragma clang diagnostic pop
-            remove(kernbypassMem);
+            printf("kill changerootfs\n");
+            #pragma clang diagnostic push
+            #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            system("killall -9 changerootfs");
+            #pragma clang diagnostic pop
             remove(changerootfsMem);
             CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR(Notify_Alert), NULL, NULL, YES);
         } else {
-            printf("Settings -> KernBypass, turn on \"kernbypassd\"\n");
+            printf("changerootfs already running\n");
         }
     }
-	return 0;
-}
-
-static void settingsChanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-    NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:PREF_PATH];
-    autoEnabled = (BOOL)[dict[@"autoEnabled"] ?: @NO boolValue];
-}
-
-__attribute__((constructor)) static void init() {
-    @autoreleasepool {
-        // Settings Notifications
-        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(),
-                                        NULL,
-                                        settingsChanged,
-                                        CFSTR(Notify_Preferences),
-                                        NULL,
-                                        CFNotificationSuspensionBehaviorCoalesce);
-
-        settingsChanged(NULL, NULL, NULL, NULL, NULL);
-    }
+    return 0;
 }

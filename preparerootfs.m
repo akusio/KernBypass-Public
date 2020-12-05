@@ -12,7 +12,6 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
-
 void hardlink_var(const char *path) {
     char src[1024];
     const char *relapath = path + strlen(FINAL_FAKEVARDIR);

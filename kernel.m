@@ -18,18 +18,18 @@ uint32_t off_vnode_usecount = 0;
 #define kCFCoreFoundationVersionNumber_iOS_14_0_b1 (1740)
 
 int offset_init() {
-  if(kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_14_0_b1){
-      // ios 14
-      off_p_pid = 0x68;
-      off_p_pfd = 0xf8;
-      off_fd_rdir = 0x40;
-      off_fd_cdir = 0x38;
-      off_vnode_iocount = 0x64;
-      off_vnode_usecount = 0x60;
-      return 0;
-  }
+    if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_14_0_b1) {
+        // ios 14
+        off_p_pid = 0x68;
+        off_p_pfd = 0xf8;
+        off_fd_rdir = 0x40;
+        off_fd_cdir = 0x38;
+        off_vnode_iocount = 0x64;
+        off_vnode_usecount = 0x60;
+        return 0;
+    }
 
-    if(kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_13_0_b2){
+    if (kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_13_0_b2) {
         // ios 13
         off_p_pid = 0x68;
         off_p_pfd = 0x108;
@@ -40,13 +40,13 @@ int offset_init() {
         return 0;
     }
 
-    if(kCFCoreFoundationVersionNumber == kCFCoreFoundationVersionNumber_iOS_13_0_b1){
+    if (kCFCoreFoundationVersionNumber == kCFCoreFoundationVersionNumber_iOS_13_0_b1) {
         //ios 13b1
+        printf("iOS 13.0 beta1 not supported");
         return -1;
     }
 
-    if(kCFCoreFoundationVersionNumber <= kCFCoreFoundationVersionNumber_iOS_13_0_b1
-       && kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_12_0){
+    if (kCFCoreFoundationVersionNumber < kCFCoreFoundationVersionNumber_iOS_13_0_b1 && kCFCoreFoundationVersionNumber >= kCFCoreFoundationVersionNumber_iOS_12_0) {
         //ios 12
         off_p_pid = 0x60;
         off_p_pfd = 0x100;
@@ -63,7 +63,6 @@ int offset_init() {
 //Use JelbrekLib
 #ifdef USE_JELBREK_LIB
 // shim
-
 #include "jelbrekLib.h"
 
 uint32_t kernel_read32(uint64_t where) {
@@ -78,20 +77,18 @@ void kernel_write32(uint64_t where, uint32_t what) {
     KernelWrite_64bits(where, what);
 }
 
-
 void kernel_write64(uint64_t where, uint64_t what) {
     KernelWrite_64bits(where, what);
 }
 
-
 int init_kernel() {
-    if(init_tfp0() != KERN_SUCCESS) {
+    if (init_tfp0() != KERN_SUCCESS) {
         printf("get tfp0 failed!\n");
         return 1;
     }
     uint64_t kbase = get_kbase(&kslide);
 
-    if(kbase == 0){
+    if (kbase == 0) {
         printf("failed get_kbase\n");
         return 1;
     }
@@ -104,20 +101,17 @@ int init_kernel() {
 
     err = offset_init();
     if (err) {
-        printf("offset init failed: uint64_t proc_of_pid(pid_t pid) {
+        printf("offset init failed: uint64_t proc_of_pid(pid_t pid: %d\n", err);
+        return 1;
+    }
 
     uint64_t proc = kernel_read64(allproc);
     uint64_t current_pid = 0;
 
-    while(proc){
+    while (proc) {
         current_pid = kernel_read32(proc + off_p_pid);
         if (current_pid == pid) return proc;
         proc = kernel_read64(proc);
-    }
-
-    return 0;
-}%d\n", err);
-        return 1;
     }
     return 0;
 }
@@ -128,7 +122,7 @@ uint64_t proc_of_pid(pid_t pid) {
     uint64_t proc = kernel_read64(allproc);
     uint64_t current_pid = 0;
 
-    while(proc){
+    while (proc) {
         current_pid = kernel_read32(proc + off_p_pid);
         if (current_pid == pid) return proc;
         proc = kernel_read64(proc);
@@ -164,26 +158,26 @@ void kernel_write64(uint64_t where, uint64_t what) {
 int init_kernel() {
   printf("======= init_kernel =======\n");
 
-  if(dimentio_init(0, NULL, NULL) != KERN_SUCCESS) {
-    printf("failed dimentio_init!\n");
-    return 1;
+  if (dimentio_init(0, NULL, NULL) != KERN_SUCCESS) {
+      printf("failed dimentio_init!\n");
+      return 1;
   }
 
-  if(init_tfp0() != KERN_SUCCESS) {
-    printf("failed init_tfp0!\n");
-    return 1;
+  if (init_tfp0() != KERN_SUCCESS) {
+      printf("failed init_tfp0!\n");
+      return 1;
   }
 
-  if(kbase == 0) {
-    printf("failed get kbase\n");
-    return 1;
+  if (kbase == 0) {
+      printf("failed get kbase\n");
+      return 1;
   }
 
   kern_return_t err = offset_init();
 
   if (err) {
-    printf("offset init failed: %d\n", err);
-    return 1;
+      printf("offset init failed: %d\n", err);
+      return 1;
   }
   return 0;
 }

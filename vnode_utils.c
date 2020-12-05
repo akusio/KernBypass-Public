@@ -7,9 +7,9 @@
 unsigned off_v_mount = 0xd8;             // vnode::v_mount
 unsigned off_mnt_flag = 0x70;            // mount::mnt_flag
 
-void print_vnode_usecount(uint64_t vnode_ptr){
+void print_vnode_usecount(uint64_t vnode_ptr) {
 
-    if(vnode_ptr == 0) return;
+    if (vnode_ptr == 0) return;
 
     uint32_t usecount = kernel_read32(vnode_ptr + off_vnode_usecount);
 
@@ -18,17 +18,17 @@ void print_vnode_usecount(uint64_t vnode_ptr){
     printf("vp = 0x%llx, usecount = %d, iocount = %d\n", vnode_ptr, usecount, iocount);
 }
 
-void set_vnode_usecount(uint64_t vnode_ptr, uint32_t usecount, uint32_t iocount){
-    if(vnode_ptr == 0) return;
+void set_vnode_usecount(uint64_t vnode_ptr, uint32_t usecount, uint32_t iocount) {
+    if (vnode_ptr == 0) return;
     kernel_write32(vnode_ptr + off_vnode_usecount, usecount);
     kernel_write32(vnode_ptr + off_vnode_iocount, iocount);
 }
 
-uint64_t get_vnode_with_chdir(const char* path){
+uint64_t get_vnode_with_chdir(const char *path) {
 
     int err = chdir(path);
 
-    if(err) return 0;
+    if (err) return 0;
 
     uint64_t proc = proc_of_pid(getpid());
 
@@ -53,7 +53,7 @@ bool copy_file_in_memory(char *original, char *replacement, bool set_usecount) {
     uint64_t orig = get_vnode_with_chdir(original);
     uint64_t fake = get_vnode_with_chdir(replacement);
 
-    if(orig == 0 || fake == 0){
+    if (orig == 0 || fake == 0) {
         printf("hardlink error orig = %llu, fake = %llu\n", orig, fake);
         return false;
     }

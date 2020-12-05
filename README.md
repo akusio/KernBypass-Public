@@ -12,7 +12,7 @@ kernel level jailbreak detection bypass
 - jelbrekLib by @Jakeashacks
 - Translated by sohsatoh
 - iOS12 support by dora2-iOS
-- Choicy Compatibility @level3tjg
+- Choicy Compatibility @level3tjg (Note: It doesn't work with Launch without Tweaks)
 - fakevar version added @NyaMisty
 - Preferences refresh, overall code optimization @ichitaso
 - Icon design by @JannikCrack and @ichitaso

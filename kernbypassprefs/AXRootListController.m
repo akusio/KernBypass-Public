@@ -6,11 +6,40 @@
 static int actions;
 static UIAlertController *alertController;
 
-static void easy_spawn(const char * args[]) {
+static void easy_spawn(const char *args[]) {
     pid_t pid;
     int status;
     posix_spawn(&pid, args[0], NULL, NULL, (char * const*)args, NULL);
     waitpid(pid, &status, WEXITED);
+}
+
+static BOOL isProcessRunning(NSString *processName) {
+    BOOL running = NO;
+
+    NSString *command = [NSString stringWithFormat:@"ps ax | grep %@ | grep -v grep | wc -l", processName];
+
+    FILE *pf;
+    char data[512];
+
+    pf = popen([command cStringUsingEncoding:NSASCIIStringEncoding],"r");
+
+    if (!pf) {
+        fprintf(stderr, "Could not open pipe for output.\n");
+        return NO;
+    }
+
+    fgets(data, 512, pf);
+
+    int val = (int)[[NSString stringWithUTF8String:data] integerValue];
+    if (val != 0) {
+        running = YES;
+    }
+
+    if (pclose(pf) != 0) {
+        fprintf(stderr," Error: Failed to close command stream \n");
+    }
+
+    return running;
 }
 
 #if __cplusplus
@@ -56,7 +85,7 @@ void kernbypassAlertButtonCallBack () {
 }
 
 - (void)kernbypassAlertButton:(NSNotification *)notification {
-    if (access(kernbypassMem, F_OK) == 0) {
+    if (isProcessRunning(@"changerootfs")) {
         alertController =
         [UIAlertController alertControllerWithTitle:nil
                                             message:@"Enabled KernBypass"
@@ -64,7 +93,7 @@ void kernbypassAlertButtonCallBack () {
         [alertController addAction:[UIAlertAction actionWithTitle:@"OK"
                                                             style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction *action) {
-                                                          }]];
+        }]];
     } else {
         alertController =
         [UIAlertController alertControllerWithTitle:nil
@@ -73,7 +102,7 @@ void kernbypassAlertButtonCallBack () {
         [alertController addAction:[UIAlertAction actionWithTitle:@"OK"
                                                             style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction *action) {
-                                                          }]];
+        }]];
     }
     [self presentViewController:alertController animated:YES completion:nil];
     [self reloadSpecifiers];
@@ -100,7 +129,7 @@ void kernbypassAlertButtonCallBack () {
         [spec setProperty:@"Automatically runs the command when enabled" forKey:@"cellSubtitleText"];
         [specifiers addObject:spec];
 
-        if (access(kernbypassMem, F_OK) != 0) {
+        if (isProcessRunning(@"changerootfs") == NO) {
             spec = [PSSpecifier preferenceSpecifierNamed:@"Enable KernBypass"
                                                   target:self
                                                      set:NULL
@@ -313,7 +342,8 @@ void kernbypassAlertButtonCallBack () {
         [mutableDict writeToFile:PREF_PATH atomically:YES];
 
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR(Notify_Preferences), NULL, NULL, YES);
-        easy_spawn((const char *[]){"/usr/bin/kernbypassd", NULL});
+        // Notification for SpringBoard (Only work enable)
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR(Notify_KernBypassd), NULL, NULL, YES);
     }]];
     [self presentViewController:alertController animated:YES completion:nil];
 }
@@ -335,11 +365,11 @@ void kernbypassAlertButtonCallBack () {
         [mutableDict setObject:@NO forKey:@"autoEnabled"];
         [mutableDict writeToFile:PREF_PATH atomically:YES];
 
-        FILE *fp = fopen(changerootfsMem, "w");
-        fclose(fp);
-
         CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(), CFSTR(Notify_Preferences), NULL, NULL, YES);
-
+        // Create check file
+        FILE *kill = fopen(changerootfsMem, "w");
+        fclose(kill);
+        // Call kernbypassd (Disable changerootfs (Notification does not work))
         easy_spawn((const char *[]){"/usr/bin/kernbypassd", NULL});
     }]];
     [self presentViewController:alertController animated:YES completion:nil];
