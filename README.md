@@ -8,7 +8,6 @@ kernel level jailbreak detection bypass
 
 ## Credits
 - maphys by 0x7ff
-- vnodebypass by @XsF1re
 - jelbrekLib by @Jakeashacks
 - Translated by sohsatoh
 - iOS12 support by dora2-iOS
