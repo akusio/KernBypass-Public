@@ -13,7 +13,7 @@
 uint64_t get_vnode_with_chdir(const char* path);
 
 //---------maphys and vnodebypass----------//
-//Thanks to 0x7ff & @XsF1re
+//Thanks to 0x7ff
 //original code : https://github.com/0x7ff/maphys/blob/master/maphys.c
 //original code : https://github.com/XsF1re/vnodebypass/blob/master/main.m
 
