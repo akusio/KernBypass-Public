@@ -18,7 +18,7 @@ kernel level jailbreak detection bypass
 
 ## Getting Started
 ### Installation
-1. [download](https://github.com/akusio/KernBypass-Public/releases/download/0.0.1/jp.akusio.kernbypass_0.0.1_iphoneos-arm.deb) and install the deb file.
+1. [download](https://github.com/akusio/KernBypass-Public/releases/download/0.0.2/jp.akusio.kernbypass_0.0.2_iphoneos-arm.deb) and install the deb file.
 ### Setting up KernBypass
 1. In terminal, run `su` and type your password.
 2. Run `changerootfs &` (don't forget "&").
